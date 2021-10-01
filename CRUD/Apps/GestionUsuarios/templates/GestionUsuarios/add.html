@@ -1,0 +1,20 @@
+{% extends 'GestionUsuarios/layout.html' %}
+
+{% block content %}
+{% if request.session.Usuario %}
+<div class="form-group">
+    <div align="center">
+        <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
+    </div>
+</div>
+{% else %}
+<h1>No tienes acceso</h1>
+{% endif %}
+{% endblock %}
+
+
+
