@@ -1,13 +1,14 @@
 {% extends 'GestionUsuarios/layout.html' %}
 {% block content %}
+<title>Actualizar</title>
 {% if request.session.Usuario %}
 <div class="form-group" align="center">
-        <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
 
-    <button type="submit" class="btn btn-primary">Editar</button>
-        </form>
+        <button type="submit" class="btn btn-primary">Editar</button>
+    </form>
 </div>
 {% else %}
 <h1>No tienes acceso</h1>
