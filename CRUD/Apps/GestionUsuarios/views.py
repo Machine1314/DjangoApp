@@ -25,13 +25,13 @@ def add(request):
 
 
 def delete(request, usuario_id):
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = Usuario.objects.get(codigo=usuario_id)
     usuario.delete()
     return redirect('home')
 
 
 def update(request, usuario_id):
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = Usuario.objects.get(codigo=usuario_id)
     if request.method == 'POST':
         form = UsuarioForm(request.POST, instance=usuario)
         if form.is_valid():

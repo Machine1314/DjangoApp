@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 class Usuario(models.Model):
-    codigo = models.CharField(max_length=6)
+    codigo = models.AutoField(primary_key=True)
     Nombre = models.CharField(max_length=40)
     Apellido = models.CharField(max_length=40)
     FechaNacimiento = models.DateField()
