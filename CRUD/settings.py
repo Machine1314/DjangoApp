@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-s(8n85g18urrmqqwesag#)#nk#kgj9q3a))@!1ez%u_1*u^dap
 DEBUG = True
 
 ALLOWED_HOSTS = ['0663-2800-bf0-140-d3d-104e-2406-c7a7-bf0e.ngrok.io',
-                 '127.0.0.1']
+                 '127.0.0.1', 'udlaweb.herokuapp.com']
 
 # Application definition
 
