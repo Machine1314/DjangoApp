@@ -3,13 +3,11 @@
 {% block content %}
 <title>Ingreso</title>
 {% if request.session.Usuario %}
-<div class="form-group">
+<div class="container">
     <div align="center">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Agregar</button>
-        </form>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Agregar</button>
     </div>
 </div>
 {% else %}

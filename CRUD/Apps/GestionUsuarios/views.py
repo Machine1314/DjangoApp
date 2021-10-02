@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import Usuario
 from .forms import UsuarioForm
+from django.template import RequestContext
+
 
 
 # Create your views here.
@@ -63,3 +65,15 @@ def logout(request):
         print('fallo salir sesion')
         return render(request, 'GestionUsuarios/login.html')
     return render(request, 'GestionUsuarios/login.html')
+
+
+
+
+def handler404(request, exception):
+    response = render(request, 'GestionUsuarios/404.html')
+    return response
+
+
+def handler500(request, exception):
+    response = render(request, 'GestionUsuarios/500.html')
+    return response

@@ -22,7 +22,7 @@ class UsuarioForm(forms.ModelForm):
             'FechaNacimiento': forms.DateInput(
                 format=('%Y-%m-%d'),
                 attrs={'class': 'form-control',
-                       'placeholder': 'Select a date',
+                       'placeholder': 'Selecciona una fecha',
                        'type': 'date'
                        }),
         }

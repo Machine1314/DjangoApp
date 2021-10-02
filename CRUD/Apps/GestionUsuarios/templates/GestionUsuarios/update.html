@@ -2,7 +2,7 @@
 {% block content %}
 <title>Actualizar</title>
 {% if request.session.Usuario %}
-<div class="form-group" align="center">
+<div class="container" align="center">
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
