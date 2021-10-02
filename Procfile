@@ -1,1 +1,1 @@
-web: gunicorn CRUD.Apps.GestionUsuarios:server
+web: gunicorn CRUD.Apps.GestionUsuarios:manage
