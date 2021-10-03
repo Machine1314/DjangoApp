@@ -20,9 +20,9 @@ class UsuarioForm(forms.ModelForm):
             'Sexo': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Sexo'}),
             'Contrasena': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}),
             'FechaNacimiento': forms.DateInput(
-        format=('%Y-%m-%d'),
-        attrs={'class': 'form-control',
-               'placeholder': 'Select a date',
-               'type': 'date'
-              }),
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'placeholder': 'Selecciona una fecha',
+                       'type': 'date'
+                       }),
         }

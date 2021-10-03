@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import Usuario
 from .forms import UsuarioForm
+from django.template import RequestContext
+
 
 
 # Create your views here.
@@ -23,13 +25,13 @@ def add(request):
 
 
 def delete(request, usuario_id):
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = Usuario.objects.get(codigo=usuario_id)
     usuario.delete()
     return redirect('home')
 
 
 def update(request, usuario_id):
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = Usuario.objects.get(codigo=usuario_id)
     if request.method == 'POST':
         form = UsuarioForm(request.POST, instance=usuario)
         if form.is_valid():
@@ -63,3 +65,15 @@ def logout(request):
         print('fallo salir sesion')
         return render(request, 'GestionUsuarios/login.html')
     return render(request, 'GestionUsuarios/login.html')
+
+
+
+
+def handler404(request, exception):
+    response = render(request, 'GestionUsuarios/404.html')
+    return response
+
+
+def handler500(request, exception):
+    response = render(request, 'GestionUsuarios/500.html')
+    return response

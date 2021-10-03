@@ -1,36 +1,37 @@
 {% extends 'GestionUsuarios/layout.html' %} &nbsp;&nbsp;
 
 {% block content %}
+<title>Home</title>
 {% if request.session.Usuario %}
 <table class="table table-striped table-dark">
-  <thead>
+    <thead>
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Apellido</th>
-      <th scope="col">Usuario</th>
-      <th scope="col">Acción</th>
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Apellido</th>
+        <th scope="col">Usuario</th>
+        <th scope="col">Acción</th>
     </tr>
-  </thead>
-  <tbody>
-   <tr>
-  {% for usuario in usuarios %}
-  <td>{{ usuario.id }}</td>
-  <td>{{ usuario.Nombre }}</td>
-  <td>{{ usuario.Apellido }}</td>
-  <td>{{ usuario.Usuario }}</td>
-  <td>
-      <a href="{% url 'delete' usuario.id %}" class="btn btn-danger">Eliminar</a>
-      <a href="{% url 'update' usuario.id %}" class="btn btn-primary">Editar</a>
-  </td>
-  </tr>
-       {% endfor %}
-  </tbody>
+    </thead>
+    <tbody>
+    <tr>
+        {% for usuario in usuarios %}
+        <td>{{ usuario.codigo }}</td>
+        <td>{{ usuario.Nombre }}</td>
+        <td>{{ usuario.Apellido }}</td>
+        <td>{{ usuario.Usuario }}</td>
+        <td>
+            <a href="{% url 'delete' usuario.codigo %}" class="btn btn-danger">Eliminar</a>
+            <a href="{% url 'update' usuario.codigo %}" class="btn btn-primary">Editar</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
 </table>
 
-    <ul>
+<ul>
 
-    </ul>
+</ul>
 
 {% else %}
 <h1>No tienes acceso</h1>
