@@ -27,3 +27,5 @@ urlpatterns = [
     path('', include('CRUD.Apps.GestionUsuarios.urls')),
 ] + static(settings.STATIC_URL, view=cache_control(no_cache=True, must_revalidate=True)(serve))
 handler404 = views.handler404
+handler500 = views.handler500
+handler403 = views.handler403
