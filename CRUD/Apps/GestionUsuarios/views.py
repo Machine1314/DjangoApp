@@ -74,6 +74,10 @@ def handler404(request, exception):
     return response
 
 
-def handler500(request, exception):
+def handler500(request):
     response = render(request, 'GestionUsuarios/500.html')
+    return response
+
+def handler403(request, exception):
+    response = render(request, 'GestionUsuarios/403.html')
     return response
