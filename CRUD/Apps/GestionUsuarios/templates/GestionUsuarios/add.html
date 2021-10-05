@@ -1,16 +1,16 @@
 {% extends 'GestionUsuarios/layout.html' %}
-
+{% load static %}
 {% block content %}
 <title>Ingreso</title>
 {% if request.session.Usuario %}
 <form method="post">
     <div class="container">
-    <div align="center">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Agregar</button>
+        <div align="center">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Agregar</button>
+        </div>
     </div>
-</div>
 </form>
 {% else %}
 <h1>No tienes acceso</h1>
