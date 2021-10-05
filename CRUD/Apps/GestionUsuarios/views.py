@@ -12,6 +12,10 @@ def home(request):
     return render(request, 'GestionUsuarios/home.html', context)
 
 
+def start(request):
+    return render(request, 'GestionUsuarios/start.html')
+
+
 def add(request):
     if request.method == 'POST':
         form = UsuarioForm(request.POST)
