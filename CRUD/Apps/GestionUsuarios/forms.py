@@ -13,7 +13,6 @@ class UsuarioForm(forms.ModelForm):
                   'Contrasena',
                   'FechaNacimiento')
         widgets = {
-            'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '#'}),
             'Nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             'Apellido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellido'}),
             'Usuario': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'}),
