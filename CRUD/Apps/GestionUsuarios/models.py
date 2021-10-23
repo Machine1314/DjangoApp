@@ -2,19 +2,69 @@ from django.db import models
 
 
 # Create your models here.
-class Usuario(models.Model):
+
+class Catalogo(models.Model):
     codigo = models.AutoField(primary_key=True)
-    Nombre = models.CharField(max_length=40)
-    Apellido = models.CharField(max_length=40)
-    FechaNacimiento = models.DateField()
-    Usuario = models.CharField(max_length=40)
-    SEXOS = (('F', 'Femenino'), ('M', 'Masculino'))
-    Sexo = models.CharField(max_length=1, choices=SEXOS, default='M')
-    Contrasena = models.CharField(max_length=20)
+    descripcion = models.CharField(max_length=100)
+    costo_Hora = models.FloatField(verbose_name="Costo por Hora")
 
-    def Datos(self):
-        cadena = "{0} {1}, {2}"
-        return cadena.format(self.Apellido, self.Nombre, self.Usuario)
 
-    def __str__(self):
-        return self.Datos()
+class Proyecto(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=60, default='')
+    descripcion = models.CharField(max_length=500, verbose_name="Descripción", default='')
+    tiempo_Estimado = models.FloatField(verbose_name="Tiempo Estimado en Semanas", default=0)
+    tiempo_Actual = models.FloatField(default=0)
+    costo_Estimado = models.FloatField(verbose_name="Costo por Estimado ($)", default=0)
+
+
+class Integrante(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100)
+    apellido = models.CharField(max_length=100)
+    usuario = models.CharField(max_length=30)
+    contrasena = models.CharField(max_length=50, verbose_name='Contraseña')
+    rol = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
+
+
+class Equipo(models.Model):
+    codigo = models.CharField(max_length=4)
+    nombre = models.CharField(max_length=100, default='')
+    proyecto_Asociado = models.ForeignKey(Proyecto, null=True, blank=True, on_delete=models.CASCADE,
+                                          verbose_name="Proyecto Asociado")
+    integrante = models.ForeignKey(Integrante, null=True, blank=True, on_delete=models.CASCADE,
+                                   verbose_name="Encargado")
+
+
+class Historia(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=60, default='')
+    estado = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
+    descripcion = models.CharField(max_length=500, verbose_name="Descripción")
+    complejidad = models.FloatField(verbose_name="Complejidad")
+    proyecto_Asociado = models.ForeignKey(Proyecto, null=True, blank=True, on_delete=models.CASCADE,
+                                          verbose_name="Proyecto Asociado")
+    integrante_Encargado = models.ForeignKey(Integrante, null=True, blank=True, on_delete=models.CASCADE,
+                                             verbose_name="Encargado")
+
+
+class Tarea(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    historia_Asociada = models.ForeignKey(Historia, null=True, blank=True, on_delete=models.CASCADE,
+                                          verbose_name="Proyecto Asociado")
+    descripcion = models.CharField(max_length=500, verbose_name="Descripción")
+    estado = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
+    tiempo_Estimado = models.FloatField(verbose_name="Tiempo Estimado")
+    tiempo_Real = models.FloatField(verbose_name="Tiempo Real Usado")
+    integrante_Encargado = models.ForeignKey(Integrante, null=True, blank=True, on_delete=models.CASCADE,
+                                             verbose_name="Encargado")
+
+
+class Bug(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    historia_Asociada = models.ForeignKey(Historia, null=True, blank=True, on_delete=models.CASCADE,
+                                          verbose_name="Proyecto Asociado")
+    estado = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
+    descripcion = models.CharField(max_length=500, verbose_name="Descripción")
+    integrante_Encargado = models.ForeignKey(Integrante, null=True, blank=True, on_delete=models.CASCADE,
+                                             verbose_name="Encargado")

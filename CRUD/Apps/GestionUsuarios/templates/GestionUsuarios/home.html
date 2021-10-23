@@ -1,41 +1,36 @@
 {% extends 'GestionUsuarios/layout.html' %} &nbsp;&nbsp;
-
+{{% load static %}
 {% block content %}
 <title>Home</title>
 {% if request.session.Usuario %}
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Nombre</th>
-        <th scope="col">Apellido</th>
-        <th scope="col">Usuario</th>
-        <th scope="col">Acción</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        {% for usuario in usuarios %}
-        <td>{{ usuario.codigo }}</td>
-        <td>{{ usuario.Nombre }}</td>
-        <td>{{ usuario.Apellido }}</td>
-        <td>{{ usuario.Usuario }}</td>
-        <td>
-            <a href="{% url 'delete' usuario.codigo %}" class="btn btn-danger">Eliminar</a>
-            <a href="{% url 'update' usuario.codigo %}" class="btn btn-primary">Editar</a>
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="container-fluid">
+<a class="btn btn-warning" onclick="abrir_modal('{% url 'addProject' %}')"><span
+                    class="fa fa-plus-circle"></span>Nuevo</a>
 
-<ul>
+</div>
+{% for proyecto in proyectos %}
+<div class="container-fluid">
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ proyecto.nombre }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">#{{ proyecto.codigo }}</h6>
+            <p class="card-text">{{ proyecto.descripcion }}</p>
 
-</ul>
+            <a href="{% url 'historias' %}" class="card-link">Historias</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<!-- Modal -->
+<div id="ventana_modal" class="modal fade" role="dialog">
 
+</div>
 {% else %}
 <h1 align="center">No tienes acceso</h1>
 {% endif %}
 {% endblock %}
+{% block extrajs %}
+<script src="{% static '/js/modal.js' %}" ></script>
+{% endblock extrajs %}
 
 
