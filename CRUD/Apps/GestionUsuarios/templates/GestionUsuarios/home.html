@@ -4,7 +4,7 @@
 <title>Home</title>
 {% if request.session.Usuario %}
 <div class="container-fluid">
-<a class="btn btn-warning" onclick="abrir_modal('{% url 'addProject' %}')"><span
+<a class="btn btn-warning" onclick="abrir_modal('{% url 'addProject' %}', '#ventana_modal')"><span
                     class="fa fa-plus-circle"></span>Nuevo</a>
 
 </div>
@@ -16,7 +16,7 @@
             <h6 class="card-subtitle mb-2 text-muted">#{{ proyecto.codigo }}</h6>
             <p class="card-text">{{ proyecto.descripcion }}</p>
 
-            <a href="{% url 'historias' %}" class="card-link">Historias</a>
+            <a href="{% url 'historias' proyecto.codigo %}" class="card-link">Historias</a>
         </div>
     </div>
 </div>

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Integrante, Proyecto
+from .models import *
 
 
 class IntegranteForm(forms.ModelForm):
@@ -32,4 +32,23 @@ class ProyectoForm(forms.ModelForm):
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'tiempo_Estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo estimado'}),
             'costo_Estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '$'}),
+             }
+
+
+class HistoriaForm(forms.ModelForm):
+    class Meta:
+        model = Historia
+        fields = ('nombre',
+                  'estado',
+                  'descripcion',
+                  'complejidad',
+                  'proyecto_Asociado',
+                  'integrante_Encargado')
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Codigo'}),
+            'estado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
+            'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo estimado'}),
+            'proyecto_Asociado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '$'}),
+            'integrante_Encargado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '$'}),
              }

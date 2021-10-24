@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Integrante, Proyecto, Catalogo, Historia
-from .forms import IntegranteForm, ProyectoForm
+from .models import *
+from .forms import *
 from django.template import RequestContext
-
 
 
 # Create your views here.
@@ -11,10 +10,29 @@ def home(request):
     context = {'proyectos': proyectos}
     return render(request, 'GestionUsuarios/home.html', context)
 
-def historias(request):
-    historias = Historia.objects.all()
-    context = {'proyectos': historias}
+
+def historias(request, proyecto_id):
+    try:
+        historias = Historia.objects.filter(proyecto_Asociado=proyecto_id)
+        print (historias)
+    except:
+        historias = None
+    context = {'historias': historias}
     return render(request, 'GestionUsuarios/historias.html', context)
+
+
+def updateHistoria(request, id):
+    historia = Historia.objects.get(codigo=id)
+    if request.method == 'POST':
+        form = HistoriaForm(request.POST, instance=historia)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = IntegranteForm(instance=historia)
+
+    context = {'form': form}
+    return render(request, 'GestionUsuarios/update.html', context)
 
 
 def start(request):
@@ -22,7 +40,6 @@ def start(request):
 
 
 def addProject(request):
-    print (request.method)
     if request.method == 'POST':
         form = ProyectoForm(request.POST)
         if form.is_valid():
@@ -32,6 +49,18 @@ def addProject(request):
         form = ProyectoForm()
     context = {'form': form}
     return render(request, 'GestionUsuarios/addProject.html', context)
+
+
+def addHistoria(request):
+    if request.method == 'POST':
+        form = HistoriaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('historias', request.POST['proyecto_Asociado'])
+    else:
+        form = HistoriaForm()
+    context = {'form': form}
+    return render(request, 'GestionUsuarios/addHistoria.html', context)
 
 
 def addMember(request):
@@ -90,8 +119,6 @@ def logout(request):
     return render(request, 'GestionUsuarios/login.html')
 
 
-
-
 def handler404(request, exception):
     response = render(request, 'GestionUsuarios/404.html')
     return response
@@ -100,6 +127,7 @@ def handler404(request, exception):
 def handler500(request):
     response = render(request, 'GestionUsuarios/500.html')
     return response
+
 
 def handler403(request, exception):
     response = render(request, 'GestionUsuarios/403.html')
