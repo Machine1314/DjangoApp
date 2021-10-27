@@ -27,6 +27,9 @@ class Integrante(models.Model):
     capacidad = models.FloatField(verbose_name="Capacidad Integrante", default=0)
     rol = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return "{} {}".format(self.nombre, self.apellido)
+
 
 class Equipo(models.Model):
     codigo = models.IntegerField(max_length=4)

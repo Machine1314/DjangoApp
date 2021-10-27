@@ -82,6 +82,7 @@ def updateHistoria(request, id):
 
 
 def addTarea(request, hist):
+    integrante = Integrante.objects.all()
     cursor = connection.cursor()
     cursor.execute('''select max(codigo) + 1 from "GestionUsuarios_tarea"''')
     row = cursor.fetchone()
@@ -97,7 +98,7 @@ def addTarea(request, hist):
             return redirect('historias', proy)
     else:
         form = TareaForm(initial={'historia_Asociada': hist, 'codigo': value})
-    context = {'form': form, 'hist': hist}
+    context = {'form': form, 'hist': hist, 'integrantes': integrante}
     return render(request, 'GestionUsuarios/addTarea.html', context)
 
 
