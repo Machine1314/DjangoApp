@@ -3,6 +3,7 @@ function abrir_modal(url, id){
     $(id).load(url, function(){
         $(this).modal('show');
     });
+
 }
 function ocultar(id, valores){
 $('#mostrar' + id).on('click', function(){

@@ -1,0 +1,68 @@
+{% extends 'GestionUsuarios/layout.html' %} &nbsp;&nbsp;
+
+{% load static %}
+<link rel="stylesheet" href="{% static '/css/metrica.css' %}">
+{% block content %}
+{% if request.session.Usuario %}
+
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+        Comparación de tendencias
+    </p>
+</figure>
+<script>
+    var data = {
+    timestamp : {{ dates|safe }},
+    temps : {{ tareas|safe }},
+    temps2 : [
+        40,
+        100
+    ]
+}
+
+ Highcharts.chart('container', {
+        chart : {
+            type : 'line',
+            zoomType : 'x'
+        },
+        title : {
+            text : 'Tendecia Actual vs Ideal',
+            x : -20
+        },
+        xAxis : {
+            categories : data.timestamp,
+            labels : {
+                rotation : -90,
+                // the step config is how you control how many x-axis labes are shown
+                // this will help when there are lots of labels
+                step : 1
+            }
+        },
+        yAxis : {
+            title : {
+                text : 'Horas'
+            }
+        },
+        tooltip : {
+            valueSuffix : 'h'
+        },
+        series : [
+            {
+                name : 'Ideal',
+                data : data.temps
+            },
+            {
+                name : 'Actual',
+                data : data.temps2
+            }
+        ]
+    });
+</script>
+{% else %}
+<h1 align="center">No tienes acceso</h1>
+{% endif %}
+{% endblock %}

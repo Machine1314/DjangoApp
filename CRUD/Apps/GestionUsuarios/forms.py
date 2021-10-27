@@ -27,7 +27,7 @@ class ProyectoForm(forms.ModelForm):
                   'tiempo_Estimado',
                   'costo_Estimado')
         widgets = {
-            'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Codigo'}),
+            'codigo': forms.HiddenInput(),
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'tiempo_Estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo estimado'}),
@@ -38,17 +38,56 @@ class ProyectoForm(forms.ModelForm):
 class HistoriaForm(forms.ModelForm):
     class Meta:
         model = Historia
-        fields = ('nombre',
+        fields = ('codigo',
+                  'nombre',
                   'estado',
                   'descripcion',
                   'complejidad',
                   'proyecto_Asociado',
                   'integrante_Encargado')
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Codigo'}),
-            'estado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'codigo': forms.HiddenInput(),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'estado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Estado'}),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
-            'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo estimado'}),
-            'proyecto_Asociado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '$'}),
-            'integrante_Encargado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '$'}),
+            'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Complejidad'}),
+            'proyecto_Asociado': forms.HiddenInput(),
+            'integrante_Encargado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '#'}),
+             }
+
+
+class TareaForm(forms.ModelForm):
+    class Meta:
+        model = Tarea
+        fields = ('codigo',
+                  'historia_Asociada',
+                  'descripcion',
+                  'estado',
+                  'tiempo_Estimado',
+                  'integrante_Encargado')
+        widgets = {
+            'codigo': forms.HiddenInput(),
+            'historia_Asociada': forms.HiddenInput(),
+            'estado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Estado'}),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
+            'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Complejidad'}),
+            'tiempo_Estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo en horas'}),
+            'integrante_Encargado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '#'}),
+             }
+
+
+class BugForm(forms.ModelForm):
+    class Meta:
+        model = Bug
+        fields = ('codigo',
+                  'historia_Asociada',
+                  'descripcion',
+                  'estado',
+                  'integrante_Encargado')
+        widgets = {
+            'codigo': forms.HiddenInput(),
+            'historia_Asociada': forms.HiddenInput(),
+            'estado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Estado'}),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
+            'integrante_Encargado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '#'}),
              }

@@ -4,23 +4,32 @@
 <title>Home</title>
 {% if request.session.Usuario %}
 <div class="container-fluid">
-<a class="btn btn-warning" onclick="abrir_modal('{% url 'addProject' %}', '#ventana_modal')"><span
-                    class="fa fa-plus-circle"></span>Nuevo</a>
-
-</div>
-{% for proyecto in proyectos %}
-<div class="container-fluid">
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">{{ proyecto.nombre }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">#{{ proyecto.codigo }}</h6>
-            <p class="card-text">{{ proyecto.descripcion }}</p>
-
-            <a href="{% url 'historias' proyecto.codigo %}" class="card-link">Historias</a>
-        </div>
+    <div align="center">
+        <a class="btn btn-warning" onclick="abrir_modal('{% url 'addProject' %}', '#ventana_modal')"><span
+            class="fa fa-plus-circle"></span> Nuevo Proyecto</a>
+    <a class="btn btn-info" href="{% url 'callSP' %}"><span
+            class="fa fa-bolt"></span> Generar Datos</a>
     </div>
 </div>
-{% endfor %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for proyecto in proyectos %}
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ proyecto.nombre }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">#{{ proyecto.codigo }}</h6>
+                    <p class="card-text">{{ proyecto.descripcion }}</p>
+                    <a class="btn btn-info" href="{% url 'historias' proyecto.codigo %}"><span
+                            class="fa fa-list"></span> Historias</a>
+                    <a class="btn btn-info"
+                       onclick="abrir_modal('{% url 'updateProject' proyecto.codigo %}', '#ventana_modal')"><span
+                            class="fa fa-pencil-square-o"></span> Editar</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
 <!-- Modal -->
 <div id="ventana_modal" class="modal fade" role="dialog">
 
@@ -30,7 +39,7 @@
 {% endif %}
 {% endblock %}
 {% block extrajs %}
-<script src="{% static '/js/modal.js' %}" ></script>
+<script src="{% static '/js/modal.js' %}"></script>
 {% endblock extrajs %}
 
 

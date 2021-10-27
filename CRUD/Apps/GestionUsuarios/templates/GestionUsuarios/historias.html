@@ -3,38 +3,69 @@
 {% block content %}
 {% if request.session.Usuario %}
 <div class="container-fluid">
-    <a class="btn btn-warning" onclick="abrir_modal('{% url 'addHistoria' %}', '#modal_Historia')"><span
-            class="fa fa-plus-circle"></span>Nueva Historia</a>
-
+    <a class="btn btn-warning" onclick="abrir_modal('{% url 'addHistoria' proyecto %}', '#modal', '{{ proyecto }}')"><span
+            class="fa fa-plus-circle"></span> Nueva Historia</a>
+    <a class="btn btn-warning" href="{% url 'metrica' proyecto %}"><span
+            class="fa fa-area-chart"></span> Métrica</a>
 </div>
 <div class="container-fluid">
     <table class="table table-striped table-light">
         <thead>
         <tr>
-            <th scope="col">  </th>
+            <th scope="col"></th>
             <th scope="col">#</th>
             <th scope="col">Descripcion</th>
             <th scope="col">Encargado</th>
             <th scope="col">Tiempo Restante</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         {% for historia in historias %}
         <tr>
-            <td><button id="mostrar{{ historia.codigo }}" class="btn" onclick="ocultar('{{ historia.codigo }}', 'values{{ historia.codigo }}' )">
-                <i class="fa fa-angle-down"></i></button></td>
+            <td><a class="btn btn-success" onclick="abrir_modal('{% url 'addTarea' historia.codigo %}', '#modal')"><span
+                    class="fa fa-plus-circle"></span></a>
+                <a class="btn btn-danger" onclick="abrir_modal('{% url 'addBug' historia.codigo %}', '#modal')"><span
+                        class="fa fa-plus-circle"></span></a>
+                <button id="mostrar{{ historia.codigo }}" class="btn"
+                        onclick="ocultar('{{ historia.codigo }}', 'values{{ historia.codigo }}' )">
+                    <i class="fa fa-angle-down"></i></button>
+            </td>
             <td>{{ historia.codigo }}</td>
             <td>{{ historia.descripcion }}</td>
-            <td>{{ historia.integrante_Encargado }}</td>
+            <td>{{ historia.integrante_Encargado.nombre }}</td>
             <td>0</td>
+            <td><a class="btn btn-info" onclick="abrir_modal('{% url 'updateHistoria' historia.codigo %}', '#modal', 'historia.proyecto_Asociado.codigo')"><span
+                    class="fa fa-pencil-square-o"></span></a></td>
         </tr>
+        {% for tarea in tareas %}
+        {% if tarea.historia_Asociada.codigo == historia.codigo %}
         <tr class="values{{ historia.codigo }}">
-            <td> </td>
-            <td>1</td>
-            <td>hola</td>
-            <td>1</td>
-            <td>1</td>
+
+            <td></td>
+            <td>{{ tarea.codigo }}</td>
+            <td>{{ tarea.descripcion }}</td>
+            <td>{{ tarea.integrante_Encargado.nombre }}</td>
+            <td>{{ tarea.tiempo_Estimado }}</td>
+            <td></td>
+
         </tr>
+        {% endif %}
+        {% endfor %}
+        {% for bug in bugs %}
+        {% if bug.historia_Asociada.codigo == historia.codigo %}
+        <tr class="values{{ historia.codigo }}">
+
+            <td></td>
+            <td>{{ bug.codigo }}</td>
+            <td>{{ bug.descripcion }}</td>
+            <td>{{ bug.integrante_Encargado.nombre }}</td>
+            <td></td>
+            <td></td>
+
+        </tr>
+        {% endif %}
+        {% endfor %}
         {% endfor %}
         </tbody>
     </table>
@@ -42,7 +73,7 @@
 
 
 <!-- Modal -->
-<div id="modal_Historia" class="modal fade" role="dialog">
+<div id="modal" class="modal fade" role="dialog">
 
 </div>
 {% else %}
