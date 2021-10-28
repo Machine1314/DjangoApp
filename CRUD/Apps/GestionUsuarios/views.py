@@ -27,16 +27,40 @@ def home(request):
 
 
 def metrica(request, proyecto_id):
-    start = datetime.datetime.strptime("24-10-2021", "%d-%m-%Y")
-    end = datetime.datetime.strptime("02-11-2021", "%d-%m-%Y")
+    start = datetime.date.today()
+    end = start + datetime.timedelta(days=5)
     date_generated = [start + datetime.timedelta(days=x) for x in range(0, (end - start).days)]
     date = [date.strftime('%Y-%m-%d') for date in date_generated]
-    tiempos = []
-    tarea = Tarea.objects.all()
-    for tareas in tarea:
-        tiempos.append(tareas.tiempo_Estimado)
-    print (tiempos)
-    context = {'dates': date, 'tareas': tiempos}
+    tiemposTendencia = []
+    tiemposTareas = []
+    with connection.cursor() as cursor:
+        cursor.execute('''select sum((COALESCE("capacidad",0)) * 5) from "GestionUsuarios_integrante" where "codigo" 
+in (SELECT "integrante_Encargado_id" FROM "GestionUsuarios_tarea" where "historia_Asociada_id" 
+	in (select "codigo" from "GestionUsuarios_historia" where "proyecto_Asociado_id" = {}))'''.format(str(proyecto_id)))
+        row = cursor.fetchone()
+        cursor.execute('''SELECT sum(abs(COALESCE("tiempo_Real", 0) - COALESCE("tiempo_Estimado", 0))) FROM "GestionUsuarios_tarea" 
+where "historia_Asociada_id" in (select "codigo" from "GestionUsuarios_historia" where "proyecto_Asociado_id" = {})'''.format(str(proyecto_id)))
+        row2 = cursor.fetchone()
+    tendencia = row[0]
+    capacidad = tendencia / 4
+    while tendencia != 0:
+        if tendencia < 0:
+            tendencia = 0
+            break
+        tiemposTendencia.append(round(tendencia, 1))
+        tendencia = tendencia - capacidad
+    tiemposTendencia.append(tendencia)
+
+    actual = row2[0]
+    capActual = actual / 4
+    while actual != 0:
+        if actual < 0:
+            actual = 0
+            break
+        tiemposTareas.append(round(actual, 1))
+        actual = actual - capActual
+    tiemposTareas.append(actual)
+    context = {'dates': date, 'tendencia': tiemposTendencia, 'actual': tiemposTareas}
     return render(request, 'GestionUsuarios/metrica.html', context)
 
 
@@ -87,7 +111,7 @@ def addTarea(request, hist):
     cursor.execute('''select max(codigo) + 1 from "GestionUsuarios_tarea"''')
     row = cursor.fetchone()
     value = row[0]
-    print (value)
+    print(value)
     cursor.execute('''select "proyecto_Asociado_id" from "GestionUsuarios_historia" where codigo = ''' + str(hist))
     row2 = cursor.fetchone()
     proy = row2[0]

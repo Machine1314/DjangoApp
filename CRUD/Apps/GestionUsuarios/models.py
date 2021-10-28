@@ -3,10 +3,20 @@ from django.db import models
 
 # Create your models here.
 
-class Catalogo(models.Model):
+class Rol(models.Model):
     codigo = models.IntegerField(primary_key=True)
     descripcion = models.CharField(max_length=100)
     costo_Hora = models.FloatField(verbose_name="Costo por Hora")
+    def __str__(self):
+        return self.descripcion
+
+
+class Estado(models.Model):
+    codigo = models.IntegerField(primary_key=True)
+    descripcion = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.descripcion
 
 
 class Proyecto(models.Model):
@@ -25,7 +35,7 @@ class Integrante(models.Model):
     usuario = models.CharField(max_length=30)
     contrasena = models.CharField(max_length=50, verbose_name='Contraseña')
     capacidad = models.FloatField(verbose_name="Capacidad Integrante", default=0)
-    rol = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
+    rol = models.ForeignKey(Rol, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return "{} {}".format(self.nombre, self.apellido)
@@ -43,7 +53,7 @@ class Equipo(models.Model):
 class Historia(models.Model):
     codigo = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=60, default='')
-    estado = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
+    estado = models.ForeignKey(Estado, null=True, blank=True, on_delete=models.CASCADE)
     descripcion = models.CharField(max_length=500, verbose_name="Descripción")
     complejidad = models.FloatField(verbose_name="Complejidad")
     proyecto_Asociado = models.ForeignKey(Proyecto, null=True, blank=True, on_delete=models.CASCADE,
@@ -57,7 +67,7 @@ class Tarea(models.Model):
     historia_Asociada = models.ForeignKey(Historia, null=True, blank=True, on_delete=models.CASCADE,
                                           verbose_name="Historia Asociada")
     descripcion = models.CharField(max_length=500, verbose_name="Descripción")
-    estado = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
+    estado = models.ForeignKey(Estado, null=True, blank=True, on_delete=models.CASCADE)
     tiempo_Estimado = models.FloatField(verbose_name="Tiempo Estimado")
     tiempo_Real = models.FloatField(verbose_name="Tiempo Real Usado", null=True)
     integrante_Encargado = models.ForeignKey(Integrante, null=True, blank=True, on_delete=models.CASCADE,
@@ -68,7 +78,7 @@ class Bug(models.Model):
     codigo = models.IntegerField(primary_key=True)
     historia_Asociada = models.ForeignKey(Historia, null=True, blank=True, on_delete=models.CASCADE,
                                           verbose_name="Historia Asociada")
-    estado = models.ForeignKey(Catalogo, null=True, blank=True, on_delete=models.CASCADE)
+    estado = models.ForeignKey(Estado, null=True, blank=True, on_delete=models.CASCADE)
     descripcion = models.CharField(max_length=500, verbose_name="Descripción")
     integrante_Encargado = models.ForeignKey(Integrante, null=True, blank=True, on_delete=models.CASCADE,
                                              verbose_name="Encargado")

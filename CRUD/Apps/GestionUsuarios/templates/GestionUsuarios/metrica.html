@@ -17,11 +17,8 @@
 <script>
     var data = {
     timestamp : {{ dates|safe }},
-    temps : {{ tareas|safe }},
-    temps2 : [
-        40,
-        100
-    ]
+    temps : {{ tendencia|safe }},
+    temps2 : {{ actual|safe }}
 }
 
  Highcharts.chart('container', {

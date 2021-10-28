@@ -48,7 +48,8 @@ class HistoriaForm(forms.ModelForm):
         widgets = {
             'codigo': forms.HiddenInput(),
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
-            'estado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Estado'}),
+            'estado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
+                                                 choices=Estado.objects.all().values_list('codigo', 'descripcion')),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Complejidad'}),
             'proyecto_Asociado': forms.HiddenInput(),
@@ -69,14 +70,14 @@ class TareaForm(forms.ModelForm):
         widgets = {
             'codigo': forms.HiddenInput(),
             'historia_Asociada': forms.HiddenInput(),
-            'estado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Estado'}),
+            'estado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
+                                                 choices=Estado.objects.all().values_list('codigo', 'descripcion')),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Complejidad'}),
             'tiempo_Estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo en horas'}),
             'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
                                                  choices=Integrante.objects.all().values_list('codigo', 'apellido')),
         }
-
 
 class BugForm(forms.ModelForm):
     class Meta:
@@ -89,7 +90,8 @@ class BugForm(forms.ModelForm):
         widgets = {
             'codigo': forms.HiddenInput(),
             'historia_Asociada': forms.HiddenInput(),
-            'estado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Estado'}),
+            'estado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
+                                                 choices=Estado.objects.all().values_list('codigo', 'descripcion')),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
                                                  choices=Integrante.objects.all().values_list('codigo', 'apellido')),
