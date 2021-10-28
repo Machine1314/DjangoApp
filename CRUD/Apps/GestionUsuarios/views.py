@@ -1,16 +1,7 @@
-import json
-
-from django.core import serializers
-from django.core.serializers import serialize
 from django.db import connection
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.template.defaultfilters import safe
-
-from .models import *
 from .forms import *
 import datetime
-from django.template import RequestContext
 
 
 # Create your views here.
@@ -39,7 +30,8 @@ in (SELECT "integrante_Encargado_id" FROM "GestionUsuarios_tarea" where "histori
 	in (select "codigo" from "GestionUsuarios_historia" where "proyecto_Asociado_id" = {}))'''.format(str(proyecto_id)))
         row = cursor.fetchone()
         cursor.execute('''SELECT sum(abs(COALESCE("tiempo_Real", 0) - COALESCE("tiempo_Estimado", 0))) FROM "GestionUsuarios_tarea" 
-where "historia_Asociada_id" in (select "codigo" from "GestionUsuarios_historia" where "proyecto_Asociado_id" = {})'''.format(str(proyecto_id)))
+where "historia_Asociada_id" in (select "codigo" from "GestionUsuarios_historia" where "proyecto_Asociado_id" = {})'''.format(
+            str(proyecto_id)))
         row2 = cursor.fetchone()
     tendencia = row[0]
     capacidad = tendencia / 4
@@ -69,9 +61,9 @@ def historias(request, proyecto_id):
         historias = Historia.objects.filter(proyecto_Asociado=proyecto_id).order_by('codigo')
         tareas = Tarea.objects.all().order_by('codigo')
         bugs = Bug.objects.all().order_by('codigo')
+        context = {'historias': historias, 'tareas': tareas, 'bugs': bugs, 'proyecto': proyecto_id}
     except:
         historias = None
-    context = {'historias': historias, 'tareas': tareas, 'bugs': bugs, 'proyecto': proyecto_id}
     return render(request, 'GestionUsuarios/historias.html', context)
 
 
@@ -207,7 +199,7 @@ def updateProject(request, proyecto_id):
 
 
 def addMember(request):
-    roles = Catalogo.objects.all()
+    roles = Rol.objects.all()
     if request.method == 'POST':
         form = EquipoForm(request.POST)
         if form.is_valid():
@@ -258,7 +250,6 @@ def logout(request):
         return redirect('login')
     except:
         print('fallo salir sesion')
-        return render(request, 'GestionUsuarios/login.html')
     return render(request, 'GestionUsuarios/login.html')
 
 
