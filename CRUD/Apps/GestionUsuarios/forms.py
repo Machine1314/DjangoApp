@@ -21,6 +21,9 @@ class IntegranteForm(forms.ModelForm):
 class EquipoForm(forms.ModelForm):
     class Meta:
         model = Equipo
+        fields = ('codigo',
+                  'nombre',
+                  'integrante')
 
 
 class ProyectoForm(forms.ModelForm):
