@@ -111,6 +111,7 @@ def updateRol(request, id):
 def deleteRol(request, id):
     rol = Rol.objects.get(codigo=id)
     rol.delete()
+    messages.success(request, 'Registro eliminado de manera exitosa!')
     return redirect('tables')
 
 
@@ -154,6 +155,7 @@ def updateStatus(request, id):
 def deleteStatus(request, id):
     estado = Estado.objects.get(codigo=id)
     estado.delete()
+    messages.success(request, 'Registro eliminado de manera exitosa!')
     return redirect('tables')
 
 
