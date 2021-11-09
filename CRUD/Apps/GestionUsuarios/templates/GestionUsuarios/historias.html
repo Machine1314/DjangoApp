@@ -2,6 +2,9 @@
 {% load static %}
 {% block content %}
 {% if request.session.Usuario %}
+<script type="text/javascript">
+                let suma = 0;
+            </script>
 {% if messages %}
 {% for message in messages %}
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -58,12 +61,16 @@
             <td>{{ historia.codigo }}</td>
             <td>{{ historia.descripcion }}</td>
             <td>{{ historia.integrante_Encargado.nombre }}</td>
-            <td>0</td>
+            <td id="col {{ historia.codigo }}"></td>
             <td><a class="btn btn-info" onclick="abrir_modal('{% url 'updateHistoria' historia.codigo %}', '#modal')"><span
                     class="fa fa-pencil-square-o"></span></a></td>
         </tr>
         {% for tarea in tareas %}
         {% if tarea.historia_Asociada.codigo == historia.codigo %}
+        <script type="text/javascript">
+                suma += {{ tarea.tiempo_Estimado }};
+                document.getElementById("col {{ historia.codigo }}").innerHTML = suma;
+            </script>
         <tr class="values{{ historia.codigo }}">
 
             <td></td>
