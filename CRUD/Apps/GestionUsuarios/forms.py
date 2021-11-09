@@ -9,12 +9,21 @@ class IntegranteForm(forms.ModelForm):
                   'nombre',
                   'apellido',
                   'usuario',
+                  'capacidad',
+                  'rol',
+                  'equipo',
                   'contrasena')
         widgets = {
+            'codigo': forms.HiddenInput(),
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             'apellido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellido'}),
+            'capacidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Capacidad'}),
             'usuario': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'}),
-            'contrasena': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}),
+            'contrasena': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}, render_value = True),
+            'rol': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
+                                                 choices=Rol.objects.all().values_list('codigo', 'descripcion')),
+            'equipo': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
+                                choices=Equipo.objects.all().values_list('codigo', 'nombre')),
         }
 
 
@@ -23,7 +32,39 @@ class EquipoForm(forms.ModelForm):
         model = Equipo
         fields = ('codigo',
                   'nombre',
-                  'integrante')
+                  'proyecto_Asociado')
+
+        widgets = {
+            'codigo': forms.HiddenInput(),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del Equipo'}),\
+            'proyecto_Asociado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
+                                                 choices=Proyecto.objects.all().values_list('codigo', 'nombre')),
+        }
+
+class RolForm(forms.ModelForm):
+    class Meta:
+        model = Rol
+        fields = ('codigo',
+                  'descripcion',
+                  'costo_Hora')
+
+        widgets = {
+            'codigo': forms.HiddenInput(),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción'}),
+            'costo_Hora': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Costo en $ por hora'}),
+        }
+
+
+class EstadoForm(forms.ModelForm):
+    class Meta:
+        model = Estado
+        fields = ('codigo',
+                  'descripcion')
+
+        widgets = {
+            'codigo': forms.HiddenInput(),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción'}),
+        }
 
 
 class ProyectoForm(forms.ModelForm):

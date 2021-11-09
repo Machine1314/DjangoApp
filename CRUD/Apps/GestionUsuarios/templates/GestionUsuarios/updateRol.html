@@ -1,16 +1,17 @@
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 class="modal-title">Nuevo Equipo</h2>
+            <h2 class="modal-title">Editar Rol</h2>
         </div>
-        <form action="{% url 'addTeam' %}" method="post">
+        <form action="{% url 'updateRol' cod %}" method="post">
             {% csrf_token %}
             <div class="modal-body">
                 {{ form.as_p }}
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" type="submit">Crear</button>
+                <button class="btn btn-primary" type="submit">Editar</button>
             </div>
         </form>
     </div>
