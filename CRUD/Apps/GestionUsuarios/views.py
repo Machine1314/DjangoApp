@@ -71,6 +71,13 @@ def updateTeam(request, id):
     return render(request, 'GestionUsuarios/updateTeam.html', context)
 
 
+def deleteTeam(request, id):
+    team = Equipo.objects.get(codigo=id)
+    team.delete()
+    messages.success(request, 'Registro eliminado con éxito!')
+    return redirect('teams')
+
+
 def addRol(request):
     cursor = connection.cursor()
     cursor.execute('''select max(codigo) + 1 from "GestionUsuarios_rol"''')

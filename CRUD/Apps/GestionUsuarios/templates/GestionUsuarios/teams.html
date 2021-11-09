@@ -40,6 +40,9 @@
                     <a class="btn btn-info"
                        onclick="abrir_modal('{% url 'updateTeam' equipo.codigo %}', '#modalEquipos')"><span
                             class="fa fa-pencil-square-o"></span> Editar</a>
+                    <a class="btn btn-danger"
+                       href="{% url 'deleteTeam' equipo.codigo %}"><span
+                            class="fa fa-trash-o"></span> Eliminar</a>
                 </div>
             </div>
         </div>
