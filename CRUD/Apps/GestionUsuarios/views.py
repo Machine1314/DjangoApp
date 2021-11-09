@@ -435,6 +435,12 @@ def updateMember(request, member_id):
     return render(request, 'GestionUsuarios/updateMember.html', context)
 
 
+def deleteMember(request, member_id):
+    usuario = Integrante.objects.get(codigo=member_id)
+    usuario.delete()
+    messages.success(request, 'Registro eliminado con éxito!')
+    return redirect('home')
+
 def delete(request, usuario_id):
     usuario = Integrante.objects.get(codigo=usuario_id)
     usuario.delete()
