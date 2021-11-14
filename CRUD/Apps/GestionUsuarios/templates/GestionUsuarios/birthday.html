@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{{% load static %}
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Felices 21!</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="{% static '/css/birthday.css' %}">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<h1>
+
+  Pida Un Deseo...<br/>... Y apague la vela mi cumpleañera hermosa (haga clic sobre la llama)
+</h1>
+<div id="glow" class="glow"></div>
+<div id="candle">
+  <div class="stripe"></div>
+  <div class="stripe"></div>
+  <div class="stripe"></div>
+  <div class="stripe"></div>
+  <div class="stripe"></div>
+  <div id="top">
+    <div class="smoke"></div>
+    <div class="smoke"></div>
+    <div class="smoke"></div>
+    <div id="knot"></div>
+    <div id="flame" class="burn"></div>
+  </div>
+</div>
+<!-- partial -->
+  <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js'></script>
+<script src='https://code.jquery.com/jquery-1.11.1.min.js'></script>
+<script  src="{% static '/js/birthday.js' %}"></script>
+
+</body>
+</html>

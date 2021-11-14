@@ -19,6 +19,14 @@ class Estado(models.Model):
         return self.descripcion
 
 
+class Equipo(models.Model):
+    codigo = models.IntegerField(primary_key=True)
+    nombre = models.CharField(max_length=100, default='')
+
+    def __str__(self):
+        return self.nombre
+
+
 class Proyecto(models.Model):
     codigo = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=60, default='')
@@ -26,19 +34,14 @@ class Proyecto(models.Model):
     tiempo_Estimado = models.FloatField(verbose_name="Tiempo Estimado en Semanas", default=0)
     tiempo_Actual = models.FloatField(default=0)
     costo_Estimado = models.FloatField(verbose_name="Costo por Estimado ($)", default=0)
+    equipo_Asociado = models.ForeignKey(Equipo, null=True, blank=True, on_delete=models.SET_NULL,
+                                          verbose_name="Equipo Asociado")
 
     def __str__(self):
         return self.nombre
 
 
-class Equipo(models.Model):
-    codigo = models.IntegerField(primary_key=True)
-    nombre = models.CharField(max_length=100, default='')
-    proyecto_Asociado = models.ForeignKey(Proyecto, null=True, blank=True, on_delete=models.SET_NULL,
-                                          verbose_name="Proyecto Asociado")
 
-    def __str__(self):
-        return self.nombre
 
 
 class Integrante(models.Model):

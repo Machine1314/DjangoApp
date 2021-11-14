@@ -15,10 +15,25 @@ def callSP(request):
 
 
 def home(request):
-    integrantes = Integrante.objects.exclude(capacidad = 0).order_by('codigo')
-    proyectos = Proyecto.objects.all().order_by('codigo')
-    context = {'proyectos': proyectos, 'usuarios': integrantes}
-    return render(request, 'GestionUsuarios/home.html', context)
+    val = 0
+    cursor = connection.cursor()
+    cursor.execute('''select "codigo" from "GestionUsuarios_rol" where descripcion like '%dmin%' ''')
+    row2 = cursor.fetchone()
+    if row2 is not None:
+        val = row2[0]
+    cursor.execute('''select rol."descripcion" from "GestionUsuarios_integrante" as integrantes join  "GestionUsuarios_rol" as rol
+on rol.codigo = integrantes.rol_id  where "usuario" = '{}' '''.format(str(request.session['Usuario'])))
+    row2 = cursor.fetchone()
+    if row2 is not None:
+        rol = row2[0]
+    if 'admin' not in request.session['Usuario']:
+        proyectos = Proyecto.objects.filter(equipo_Asociado=request.session['equipo']).order_by('codigo')
+        context = {'proyectos': proyectos, 'rol': rol}
+        return render(request, 'GestionUsuarios/home.html', context)
+    else:
+        integrantes = Integrante.objects.exclude(rol=val).order_by('codigo')
+        context = {'usuarios': integrantes, 'rol': rol}
+        return render(request, 'GestionUsuarios/home.html', context)
 
 
 def tables(request):
@@ -32,6 +47,54 @@ def teams(request):
     equipos = Equipo.objects.all().order_by('codigo')
     context = {'equipos': equipos}
     return render(request, 'GestionUsuarios/teams.html', context)
+
+
+def login(request):
+    if request.method == 'POST':
+        try:
+            if 'nalgona' in request.POST['correo'] and 'tengo21' in request.POST['pwd']:
+                return render(request, 'GestionUsuarios/birthday.html')
+            usuario = Integrante.objects.get(usuario=request.POST['correo'])
+            if check_password(request.POST['pwd'], usuario.contrasena):
+                request.session['Usuario'] = usuario.usuario
+                request.session['rol'] = usuario.rol.descripcion
+                if 'admin' not in usuario.usuario:
+                    request.session['equipo'] = usuario.equipo.codigo
+                return redirect('home')
+            else:
+                return render(request, 'GestionUsuarios/login.html')
+        except Exception as e:
+            context = {'message': e}
+    return render(request, 'GestionUsuarios/login.html')
+
+
+def logout(request):
+    try:
+        if 'dmin' not in request.session['Usuario']:
+            del request.session['equipo']
+        del request.session['Usuario']
+        del request.session['rol']
+        return redirect('login')
+    except Exception as e:
+        print('fallo salir sesion ', e)
+    return render(request, 'GestionUsuarios/login.html')
+
+
+def handler404(request, exception):
+    response = render(request, 'GestionUsuarios/404.html')
+    return response
+
+
+def handler500(request):
+    response = render(request, 'GestionUsuarios/500.html')
+    return response
+
+
+def handler403(request, exception):
+    response = render(request, 'GestionUsuarios/403.html')
+    return response
+
+
 
 
 def addTeam(request):
@@ -448,6 +511,7 @@ def deleteMember(request, member_id):
     messages.success(request, 'Registro eliminado con éxito!')
     return redirect('home')
 
+
 def delete(request, usuario_id):
     usuario = Integrante.objects.get(codigo=usuario_id)
     usuario.delete()
@@ -468,40 +532,4 @@ def update(request, usuario_id):
     return render(request, 'GestionUsuarios/update.html', context)
 
 
-def login(request):
-    if request.method == 'POST':
-        try:
-            usuario = Integrante.objects.get(usuario=request.POST['correo'])
-            if check_password(request.POST['pwd'], usuario.contrasena):
-                request.session['Usuario'] = usuario.usuario
-                return redirect('home')
-            else:
-                return render(request, 'GestionUsuarios/login.html')
-        except:
-            context = {'message': 'Fallo'}
-    return render(request, 'GestionUsuarios/login.html')
 
-
-def logout(request):
-    try:
-        del request.session['Usuario']
-        print('elimina')
-        return redirect('login')
-    except:
-        print('fallo salir sesion')
-    return render(request, 'GestionUsuarios/login.html')
-
-
-def handler404(request, exception):
-    response = render(request, 'GestionUsuarios/404.html')
-    return response
-
-
-def handler500(request):
-    response = render(request, 'GestionUsuarios/500.html')
-    return response
-
-
-def handler403(request, exception):
-    response = render(request, 'GestionUsuarios/403.html')
-    return response

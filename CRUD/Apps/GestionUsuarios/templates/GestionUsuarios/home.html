@@ -43,9 +43,10 @@
                     <p class="card-text">{{ proyecto.descripcion }}</p>
                     <a class="btn btn-info" href="{% url 'historias' proyecto.codigo %}"><span
                             class="fa fa-list"></span> Historias</a>
-                    <a class="btn btn-info"
-                       onclick="abrir_modal('{% url 'updateProject' proyecto.codigo %}', '#ventana_modal')"><span
+                    {% if rol == "Product Owner" %}
+                    <a class="btn btn-info" onclick="abrir_modal('{% url 'updateProject' proyecto.codigo %}', '#ventana_modal')"><span
                             class="fa fa-pencil-square-o"></span> Editar</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

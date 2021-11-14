@@ -19,11 +19,12 @@ class IntegranteForm(forms.ModelForm):
             'apellido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellido'}),
             'capacidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Capacidad'}),
             'usuario': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'}),
-            'contrasena': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}, render_value = True),
+            'contrasena': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'},
+                                              render_value=True),
             'rol': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
-                                                 choices=Rol.objects.all().values_list('codigo', 'descripcion')),
+                                choices=Rol.objects.all().values_list('codigo', 'descripcion')),
             'equipo': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
-                                choices=Equipo.objects.all().values_list('codigo', 'nombre')),
+                                   choices=Equipo.objects.all().values_list('codigo', 'nombre')),
         }
 
 
@@ -31,15 +32,13 @@ class EquipoForm(forms.ModelForm):
     class Meta:
         model = Equipo
         fields = ('codigo',
-                  'nombre',
-                  'proyecto_Asociado')
+                  'nombre')
 
         widgets = {
             'codigo': forms.HiddenInput(),
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del Equipo'}),\
-            'proyecto_Asociado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
-                                                 choices=Proyecto.objects.all().values_list('codigo', 'nombre')),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del Equipo'})
         }
+
 
 class RolForm(forms.ModelForm):
     class Meta:
@@ -74,13 +73,16 @@ class ProyectoForm(forms.ModelForm):
                   'nombre',
                   'descripcion',
                   'tiempo_Estimado',
-                  'costo_Estimado')
+                  'costo_Estimado',
+                  'equipo_Asociado')
         widgets = {
             'codigo': forms.HiddenInput(),
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'tiempo_Estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo estimado'}),
             'costo_Estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '$'}),
+            'equipo_Asociado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
+                                            choices=Equipo.objects.all().values_list('codigo', 'nombre')),
         }
 
 
