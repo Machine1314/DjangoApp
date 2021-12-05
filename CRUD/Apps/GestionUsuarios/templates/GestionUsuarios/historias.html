@@ -68,7 +68,7 @@
         {% for tarea in tareas %}
         {% if tarea.historia_Asociada.codigo == historia.codigo %}
         <script type="text/javascript">
-                suma += {{ tarea.tiempo_Estimado }};
+                suma += {{ tarea.tiempo }};
                 document.getElementById("col {{ historia.codigo }}").innerHTML = suma;
             </script>
         <tr class="values{{ historia.codigo }}">
@@ -78,7 +78,7 @@
             <td>{{ tarea.codigo }}</td>
             <td>{{ tarea.descripcion }}</td>
             <td>{{ tarea.integrante_Encargado.nombre }}</td>
-            <td>{{ tarea.tiempo_Estimado }}</td>
+            <td>{{ tarea.tiempo }}</td>
             <td><a class="btn btn-success" onclick="abrir_modal('{% url 'updateTarea' tarea.codigo %}', '#modal')"><span
                     class="fa fa-pencil-square-o"></span></a></td>
 

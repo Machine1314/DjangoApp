@@ -29,14 +29,14 @@
     <a class="btn btn-success" onclick="abrir_modal('{% url 'addTeam' %}', '#modalEquipos')">
         <span class="fa fa-plus-circle"></span> Nuevo Equipo</a>
 </div>
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<div class="row row-cols-1 row-cols-md-5 g-4">
         {% for equipo in equipos %}
         <div class="col">
-            <div class="card">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">{{ equipo }}</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ equipo }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted"></h6>
-                    <p class="card-text">Proyecto Asociado: {{ equipo.proyecto_Asociado }}</p>
+                    <h6 class="card-title">Código: {{ equipo.codigo }}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">&nbsp;&nbsp;&nbsp;</h6>
                     <a class="btn btn-info"
                        onclick="abrir_modal('{% url 'updateTeam' equipo.codigo %}', '#modalEquipos')"><span
                             class="fa fa-pencil-square-o"></span> Editar</a>

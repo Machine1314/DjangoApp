@@ -7,6 +7,7 @@ class Rol(models.Model):
     codigo = models.IntegerField(primary_key=True)
     descripcion = models.CharField(max_length=100)
     costo_Hora = models.FloatField(verbose_name="Costo por Hora")
+
     def __str__(self):
         return self.descripcion
 
@@ -35,13 +36,17 @@ class Proyecto(models.Model):
     tiempo_Actual = models.FloatField(default=0)
     costo_Estimado = models.FloatField(verbose_name="Costo por Estimado ($)", default=0)
     equipo_Asociado = models.ForeignKey(Equipo, null=True, blank=True, on_delete=models.SET_NULL,
-                                          verbose_name="Equipo Asociado")
+                                        verbose_name="Equipo Asociado")
 
     def __str__(self):
         return self.nombre
 
 
-
+class Tiempos(models.Model):
+    proyecto_id = models.IntegerField(null=False, blank=False)
+    fecha = models.DateField(null=False)
+    tiempo_Ideal = models.FloatField(null=False)
+    tiempo_Actual = models.FloatField(null=True)
 
 
 class Integrante(models.Model):
@@ -76,8 +81,7 @@ class Tarea(models.Model):
                                           verbose_name="Historia Asociada")
     descripcion = models.CharField(max_length=500, verbose_name="Descripción")
     estado = models.ForeignKey(Estado, null=True, blank=True, on_delete=models.SET_NULL)
-    tiempo_Estimado = models.FloatField(verbose_name="Tiempo Estimado")
-    tiempo_Real = models.FloatField(verbose_name="Tiempo Real Usado", null=True)
+    tiempo = models.FloatField(verbose_name="Tiempo Restante")
     integrante_Encargado = models.ForeignKey(Integrante, null=True, blank=True, on_delete=models.SET_NULL,
                                              verbose_name="Encargado")
 

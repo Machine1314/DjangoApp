@@ -87,6 +87,11 @@ class ProyectoForm(forms.ModelForm):
 
 
 class HistoriaForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        equipo = kwargs.pop('equipo')
+        super().__init__(*args, **kwargs)
+        self.fields['integrante_Encargado'].queryset = Integrante.objects.filter(equipo=equipo)
+
     class Meta:
         model = Historia
         fields = ('codigo',
@@ -104,19 +109,23 @@ class HistoriaForm(forms.ModelForm):
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Complejidad'}),
             'proyecto_Asociado': forms.HiddenInput(),
-            'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
-                                                 choices=Integrante.objects.all().values_list('codigo', 'apellido')),
+            'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'}),
         }
 
 
 class TareaForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        equipo = kwargs.pop('equipo')
+        super().__init__(*args, **kwargs)
+        self.fields['integrante_Encargado'].queryset = Integrante.objects.filter(equipo=equipo)
+
     class Meta:
         model = Tarea
         fields = ('codigo',
                   'historia_Asociada',
                   'descripcion',
                   'estado',
-                  'tiempo_Estimado',
+                  'tiempo',
                   'integrante_Encargado')
         widgets = {
             'codigo': forms.HiddenInput(),
@@ -125,13 +134,17 @@ class TareaForm(forms.ModelForm):
                                    choices=Estado.objects.all().values_list('codigo', 'descripcion')),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Complejidad'}),
-            'tiempo_Estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo en horas'}),
-            'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
-                                                 choices=Integrante.objects.all().values_list('codigo', 'apellido')),
+            'tiempo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo en horas'}),
+            'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'}),
         }
 
 
 class BugForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        equipo = kwargs.pop('equipo')
+        super().__init__(*args, **kwargs)
+        self.fields['integrante_Encargado'].queryset = Integrante.objects.filter(equipo=equipo)
+
     class Meta:
         model = Bug
         fields = ('codigo',
@@ -145,6 +158,5 @@ class BugForm(forms.ModelForm):
             'estado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
                                    choices=Estado.objects.all().values_list('codigo', 'descripcion')),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
-            'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
-                                                 choices=Integrante.objects.all().values_list('codigo', 'apellido')),
+            'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'}),
         }

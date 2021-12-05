@@ -37,9 +37,10 @@
         {% for proyecto in proyectos %}
         <div class="col">
             <div class="card">
+                <div class="card-header">{{ proyecto.nombre }}</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ proyecto.nombre }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">#{{ proyecto.codigo }}</h6>
+                    <h5 class="card-title">Equipo encargado: {{ proyecto.equipo_Asociado }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Descripción</h6>
                     <p class="card-text">{{ proyecto.descripcion }}</p>
                     <a class="btn btn-info" href="{% url 'historias' proyecto.codigo %}"><span
                             class="fa fa-list"></span> Historias</a>
@@ -65,10 +66,10 @@
         {% for usuario in usuarios %}
         <div class="col">
             <div class="card">
+                <div class="card-header">{{ usuario.rol }}</div>
                 <div class="card-body">
                     <h5 class="card-title">{{ usuario }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{ usuario.usuario }}</h6>
-                    <p class="card-text">{{ usuario.rol }}</p>
                     <a class="btn btn-info"
                        onclick="abrir_modal('{% url 'updateMember' usuario.codigo %}', '#ventana_modal')"><span
                             class="fa fa-pencil-square-o"></span> Editar</a>
