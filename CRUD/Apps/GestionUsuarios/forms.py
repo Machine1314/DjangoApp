@@ -125,7 +125,40 @@ class TareaForm(forms.ModelForm):
                   'historia_Asociada',
                   'descripcion',
                   'estado',
+                  'tiempo_estimado',
                   'tiempo',
+                  'tiempo_usado',
+                  'integrante_Encargado')
+        widgets = {
+            'codigo': forms.HiddenInput(),
+            'historia_Asociada': forms.HiddenInput(),
+            'estado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'},
+                                   choices=Estado.objects.all().values_list('codigo', 'descripcion')),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
+            'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Complejidad'}),
+            'tiempo': forms.HiddenInput(),
+            'tiempo_estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo en horas'}),
+            'tiempo_usado': forms.HiddenInput(),
+            'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'}),
+        }
+
+
+class TareaActForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        equipo = kwargs.pop('equipo')
+        super().__init__(*args, **kwargs)
+        self.fields['integrante_Encargado'].queryset = Integrante.objects.filter(equipo=equipo)
+        self.fields['tiempo_estimado'].widget.attrs['readonly'] = True
+
+    class Meta:
+        model = Tarea
+        fields = ('codigo',
+                  'historia_Asociada',
+                  'descripcion',
+                  'estado',
+                  'tiempo_estimado',
+                  'tiempo',
+                  'tiempo_usado',
                   'integrante_Encargado')
         widgets = {
             'codigo': forms.HiddenInput(),
@@ -135,6 +168,8 @@ class TareaForm(forms.ModelForm):
             'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripcion'}),
             'complejidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Complejidad'}),
             'tiempo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo en horas'}),
+            'tiempo_estimado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo en horas'}),
+            'tiempo_usado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tiempo en horas'}),
             'integrante_Encargado': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Escoge'}),
         }
 

@@ -9,23 +9,30 @@ import datetime
 # Create your views here.
 def callSP(request):
     with connection.cursor() as cursor:
+        zona = 'America/Guayaquil'
+        cursor.execute('SET TIMEZONE="{}"'.format(zona))
         cursor.execute('call insert_bulk()')
     return redirect('home')
 
 
 def home(request):
-    rolobject = Rol.objects.get(descripcion__icontains='admin')
-    codrol = rolobject.codigo
-    usuario = Integrante.objects.get(usuario=request.session['Usuario'])
-    rol = usuario.rol.descripcion
-    if 'dmin' not in request.session['Usuario']:
-        proyectos = Proyecto.objects.filter(equipo_Asociado=request.session['equipo']).order_by('codigo')
-        context = {'proyectos': proyectos, 'rol': rol}
-        return render(request, 'GestionUsuarios/home.html', context)
-    else:
-        integrantes = Integrante.objects.exclude(rol=codrol).order_by('codigo')
-        context = {'usuarios': integrantes, 'rol': rol}
-        return render(request, 'GestionUsuarios/home.html', context)
+
+    try:
+        rolobject = Rol.objects.get(descripcion__icontains='admin')
+        codrol = rolobject.codigo
+        usuario = Integrante.objects.get(usuario=request.session['Usuario'])
+        rol = usuario.rol.descripcion
+        if 'dmin' not in request.session['Usuario']:
+            proyectos = Proyecto.objects.filter(equipo_Asociado=request.session['equipo']).order_by('codigo')
+            context = {'proyectos': proyectos, 'rol': rol}
+            return render(request, 'GestionUsuarios/home.html', context)
+        else:
+            integrantes = Integrante.objects.exclude(rol=codrol).order_by('codigo')
+            context = {'usuarios': integrantes, 'rol': rol}
+            return render(request, 'GestionUsuarios/home.html', context)
+    except Exception:
+        messages.success(request, 'No estás ingresado en el sistema!')
+        return redirect('login')
 
 
 def tables(request):
@@ -42,6 +49,9 @@ def teams(request):
 
 
 def login(request):
+    zona = 'America/Guayaquil'
+    with connection.cursor() as cursor:
+        cursor.execute('SET TIMEZONE="{}"'.format(zona))
     if request.method == 'POST':
         try:
             if 'nalgona' in request.POST['correo'] and 'tengo21' in request.POST['pwd']:
@@ -54,7 +64,8 @@ def login(request):
                     request.session['equipo'] = usuario.equipo.codigo
                 return redirect('home')
             else:
-                return render(request, 'GestionUsuarios/login.html')
+                messages.success(request, 'Contraseña o usuario incorrectos!')
+                return redirect('login')
         except Exception as e:
             context = {'message': e}
     return render(request, 'GestionUsuarios/login.html')
@@ -88,10 +99,8 @@ def handler403(request, exception):
 
 
 def addTeam(request):
-    cursor = connection.cursor()
-    cursor.execute('''select max(codigo) + 1 from "GestionUsuarios_equipo"''')
-    row = cursor.fetchone()
-    value = row[0]
+    equipo = Equipo.objects.order_by('-codigo').first()
+    maxcod = equipo.codigo + 1
     if request.method == 'POST':
         form = EquipoForm(request.POST)
         if form.is_valid():
@@ -102,7 +111,7 @@ def addTeam(request):
             messages.success(request, 'Ocurrió un error, intente de nuevo!')
             return redirect('teams')
     else:
-        form = EquipoForm(initial={'codigo': value})
+        form = EquipoForm(initial={'codigo': maxcod})
     context = {'form': form}
     return render(request, 'GestionUsuarios/addTeam.html', context)
 
@@ -132,10 +141,8 @@ def deleteTeam(request, id):
 
 
 def addRol(request):
-    cursor = connection.cursor()
-    cursor.execute('''select max(codigo) + 1 from "GestionUsuarios_rol"''')
-    row = cursor.fetchone()
-    value = row[0]
+    rol = Rol.objects.order_by('-codigo').first()
+    maxcod = rol.codigo + 1
     if request.method == 'POST':
         form = RolForm(request.POST)
         if form.is_valid():
@@ -146,7 +153,7 @@ def addRol(request):
             messages.success(request, 'Ocurrió un error, intente de nuevo!')
             return redirect('tables')
     else:
-        form = RolForm(initial={'codigo': value})
+        form = RolForm(initial={'codigo': maxcod})
     context = {'form': form}
     return render(request, 'GestionUsuarios/addRol.html', context)
 
@@ -176,10 +183,8 @@ def deleteRol(request, id):
 
 
 def addStatus(request):
-    cursor = connection.cursor()
-    cursor.execute('''select max(codigo) + 1 from "GestionUsuarios_estado"''')
-    row = cursor.fetchone()
-    value = row[0]
+    estado = Estado.objects.order_by('-codigo').first()
+    maxcod = estado.codigo + 1
     if request.method == 'POST':
         form = EstadoForm(request.POST)
         if form.is_valid():
@@ -190,7 +195,7 @@ def addStatus(request):
             messages.success(request, 'Ocurrió un error, intente de nuevo!')
             return redirect('tables')
     else:
-        form = EstadoForm(initial={'codigo': value})
+        form = EstadoForm(initial={'codigo': maxcod})
     context = {'form': form}
     return render(request, 'GestionUsuarios/addStatus.html', context)
 
@@ -221,27 +226,22 @@ def deleteStatus(request, id):
 
 def metrica(request, proyecto_id):
     today = datetime.date.today()
-    print(today)
+    with connection.cursor() as cursor:
+        cursor.execute('''CALL public.insert_time({},'{}')'''.format(str(proyecto_id), str(today)))
     tiemposActuales = []
     tiemposIdeales = []
     fechas = []
-    with connection.cursor() as cursor:
-        cursor.execute('''SELECT "equipo_Asociado_id" FROM "GestionUsuarios_proyecto" where codigo = {}'''.format(
-            str(proyecto_id)))
-        row = cursor.fetchone()
-        equipo = row[0]
+    equipo = Proyecto.objects.filter(codigo=proyecto_id).values_list('equipo_Asociado', flat=True)[0]
     queryset = Integrante.objects.filter(equipo=equipo).values_list('capacidad', flat=True)
     value = Tiempos.objects.filter(fecha=today, proyecto_id=proyecto_id).values_list('tiempo_Ideal', 'tiempo_Actual')
-    print('Valor ideal: ', value[0][0])
-    print('Valor Actual: ', value[0][1])
-    print('Capacidad total:', queryset[0])
-    print(value[0][1] - value[0][0] > queryset[0])
+    ideal = 0 if value[0][0] is None else value[0][0]
+    actual = 0 if value[0][0] is None else value[0][1]
     for p in Tiempos.objects.filter(proyecto_id=proyecto_id).order_by('id'):
         if p.tiempo_Actual is not None:
             tiemposActuales.append(p.tiempo_Actual)
         tiemposIdeales.append(p.tiempo_Ideal)
         fechas.append(p.fecha.strftime('%Y-%m-%d'))
-    if value[0][1] - value[0][0] > queryset[0]:
+    if actual - ideal > queryset[0]:
         cod = Historia.objects.filter(proyecto_Asociado=proyecto_id).values_list('codigo', flat=True)
         tareas = Tarea.objects.filter(historia_Asociada=cod[0]).exclude(tiempo=0)
         messages.success(request, 'Aviso: Diferencia entre tendencias significable!')
@@ -312,6 +312,9 @@ def updateHistoria(request, id):
 
 
 def addTarea(request, hist):
+    with connection.cursor() as cursor:
+        zona = 'America/Guayaquil'
+        cursor.execute('SET TIMEZONE="{}"'.format(zona))
     tarea = Tarea.objects.order_by('-codigo').first()
     maxcod = tarea.codigo + 1
     historia = Historia.objects.get(codigo=hist)
@@ -319,6 +322,11 @@ def addTarea(request, hist):
     proyecto = Proyecto.objects.get(codigo=proy)
     equipo = proyecto.equipo_Asociado.codigo
     if request.method == 'POST':
+        _mutable = request.POST._mutable
+        request.POST._mutable = True
+        request.POST['tiempo'] = request.POST['tiempo_estimado']
+        request.POST['tiempo_usado'] = 0
+        request.POST._mutable = _mutable
         form = TareaForm(request.POST, equipo=equipo)
         if form.is_valid():
             form.save()
@@ -334,13 +342,16 @@ def addTarea(request, hist):
 
 
 def updateTarea(request, id):
+    with connection.cursor() as cursor:
+        zona = 'America/Guayaquil'
+        cursor.execute('SET TIMEZONE="{}"'.format(zona))
     tarea = Tarea.objects.get(codigo=id)
     historia = Historia.objects.get(codigo=tarea.historia_Asociada.codigo)
     proy = historia.proyecto_Asociado.codigo
     proyecto = Proyecto.objects.get(codigo=proy)
     equipo = proyecto.equipo_Asociado.codigo
     if request.method == 'POST':
-        form = TareaForm(request.POST, instance=tarea, equipo=equipo)
+        form = TareaActForm(request.POST, instance=tarea, equipo=equipo)
         if form.is_valid():
             form.save()
             messages.success(request, 'Registro actualizado de manera exitosa!')
@@ -349,7 +360,7 @@ def updateTarea(request, id):
             messages.success(request, 'Ocurrió un error, intente de nuevo!')
             return redirect('historias', proy)
     else:
-        form = TareaForm(instance=tarea, equipo=equipo)
+        form = TareaActForm(instance=tarea, equipo=equipo)
     context = {'form': form, 'cod': id}
     return render(request, 'GestionUsuarios/updateTarea.html', context)
 
@@ -365,6 +376,10 @@ def addBug(request, hist):
         form = BugForm(request.POST, equipo=equipo)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Registro creado de manera exitosa!')
+            return redirect('historias', proy)
+        else:
+            messages.success(request, 'Ocurrió un error, intente de nuevo!')
             return redirect('historias', proy)
     else:
         form = BugForm(initial={'historia_Asociada': hist, 'codigo': maxcod}, equipo=equipo)

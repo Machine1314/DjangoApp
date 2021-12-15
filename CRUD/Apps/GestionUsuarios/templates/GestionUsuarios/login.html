@@ -23,7 +23,13 @@
         </a>
     </div>
 </nav>
-
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-danger">
+    <strong>{{message}}</strong>
+</div>
+{% endfor %}
+{% endif %}
 <!-- partial:index.partial.html -->
 <div class="page">
     <div class="container">
@@ -71,7 +77,8 @@
 </div>
 <!-- partial -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="{% static '/js/login.js' %}"></script>
-
+<script src="{% static '/js/modal.js' %}"></script>
 </body>
 </html>

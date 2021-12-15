@@ -81,7 +81,11 @@ class Tarea(models.Model):
                                           verbose_name="Historia Asociada")
     descripcion = models.CharField(max_length=500, verbose_name="Descripción")
     estado = models.ForeignKey(Estado, null=True, blank=True, on_delete=models.SET_NULL)
+    fecha_inicio = models.DateField(null=True)
+    dias = models.IntegerField(null=True, default=0)
+    tiempo_estimado = models.FloatField(verbose_name="Tiempo Estimado")
     tiempo = models.FloatField(verbose_name="Tiempo Restante")
+    tiempo_usado = models.FloatField(verbose_name="Tiempo Usado")
     integrante_Encargado = models.ForeignKey(Integrante, null=True, blank=True, on_delete=models.SET_NULL,
                                              verbose_name="Encargado")
 
