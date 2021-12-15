@@ -64,12 +64,13 @@ def login(request):
                     request.session['equipo'] = usuario.equipo.codigo
                 return redirect('home')
             else:
-                messages.success(request, 'Contraseña o usuario incorrectos!')
+                messages.success(request, 'Contraseña incorrecta!')
                 return redirect('login')
         except Exception as e:
+            if request.POST['pwd'] != '':
+                messages.success(request, 'Usuario no existe!')
             context = {'message': e}
     return render(request, 'GestionUsuarios/login.html')
-
 
 def logout(request):
     try:
