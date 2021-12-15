@@ -17,8 +17,10 @@
     <a class="btn btn-warning"
        onclick="abrir_modal('{% url 'addHistoria' proyecto %}', '#modal', '{{ proyecto }}')"><span
             class="fa fa-plus-circle"></span> Nueva Historia</a>
-    <a class="btn btn-warning" href="{% url 'metrica' proyecto %}"><span
+    {% if rol == "Product Owner" %}
+     <a class="btn btn-warning" href="{% url 'metrica' proyecto %}"><span
             class="fa fa-area-chart"></span> Métrica</a>
+    {% endif %}
 </div>
 <div class="container-fluid">
     <table class="table table-striped table-light">

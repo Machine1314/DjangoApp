@@ -4,7 +4,7 @@
 {% load mathfilters %}
 <link rel="stylesheet" href="{% static '/css/metrica.css' %}">
 {% block content %}
-{% if request.session.Usuario %}
+{% if request.session.Usuario and rol == 'Product Owner' %}
 {% if messages %}
 {% for message in messages %}
 <div class="alert alert-warning">

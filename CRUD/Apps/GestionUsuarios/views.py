@@ -227,29 +227,36 @@ def deleteStatus(request, id):
 
 
 def metrica(request, proyecto_id):
-    today = datetime.datetime.now(pytz.timezone("America/Guayaquil")).strftime('%Y-%m-%d')
-    with connection.cursor() as cursor:
-        cursor.execute('''CALL public.insert_time({},'{}')'''.format(str(proyecto_id), str(today)))
-    tiemposActuales = []
-    tiemposIdeales = []
-    fechas = []
-    equipo = Proyecto.objects.filter(codigo=proyecto_id).values_list('equipo_Asociado', flat=True)[0]
-    queryset = Integrante.objects.filter(equipo=equipo).values_list('capacidad', flat=True)
-    value = Tiempos.objects.filter(fecha=today, proyecto_id=proyecto_id).values_list('tiempo_Ideal', 'tiempo_Actual')
-    ideal = 0 if value[0][0] is None else value[0][0]
-    actual = 0 if value[0][0] is None else value[0][1]
-    for p in Tiempos.objects.filter(proyecto_id=proyecto_id).order_by('id'):
-        if p.tiempo_Actual is not None:
-            tiemposActuales.append(p.tiempo_Actual)
-        tiemposIdeales.append(p.tiempo_Ideal)
-        fechas.append(p.fecha.strftime('%Y-%m-%d'))
-    if actual - ideal > queryset[0]:
-        cod = Historia.objects.filter(proyecto_Asociado=proyecto_id).values_list('codigo', flat=True)
-        tareas = Tarea.objects.filter(historia_Asociada=cod[0]).exclude(tiempo=0)
-        messages.success(request, 'Aviso: Diferencia entre tendencias significable!')
-        context = {'dates': fechas, 'tendencia': tiemposIdeales, 'actual': tiemposActuales, 'tareas': tareas}
-    else:
-        context = {'dates': fechas, 'tendencia': tiemposIdeales, 'actual': tiemposActuales}
+    try:
+        today = datetime.datetime.now(pytz.timezone("America/Guayaquil")).strftime('%Y-%m-%d')
+        with connection.cursor() as cursor:
+            cursor.execute('''CALL public.insert_time({},'{}')'''.format(str(proyecto_id), str(today)))
+        tiemposActuales = []
+        tiemposIdeales = []
+        fechas = []
+        context = {}
+        equipo = Proyecto.objects.filter(codigo=proyecto_id).values_list('equipo_Asociado', flat=True)[0]
+        queryset = Integrante.objects.filter(equipo=equipo).values_list('capacidad', flat=True)
+        value = Tiempos.objects.filter(fecha=today, proyecto_id=proyecto_id).values_list('tiempo_Ideal', 'tiempo_Actual')
+        ideal = 0 if value[0][0] is None else value[0][0]
+        actual = 0 if value[0][0] is None else value[0][1]
+        usuario = Integrante.objects.get(usuario=request.session['Usuario'])
+        rol = usuario.rol.descripcion
+        for p in Tiempos.objects.filter(proyecto_id=proyecto_id).order_by('id'):
+            if p.tiempo_Actual is not None:
+                tiemposActuales.append(p.tiempo_Actual)
+            tiemposIdeales.append(p.tiempo_Ideal)
+            fechas.append(p.fecha.strftime('%Y-%m-%d'))
+        if actual - ideal > queryset[0]:
+            cod = Historia.objects.filter(proyecto_Asociado=proyecto_id).values_list('codigo', flat=True)
+            tareas = Tarea.objects.filter(historia_Asociada=cod[0]).exclude(tiempo=0)
+            if rol == 'Product Owner':
+                messages.success(request, 'Aviso: Diferencia entre tendencias significable!')
+            context = {'dates': fechas, 'tendencia': tiemposIdeales, 'actual': tiemposActuales, 'tareas': tareas, 'rol': rol}
+        else:
+            context = {'dates': fechas, 'tendencia': tiemposIdeales, 'actual': tiemposActuales, 'rol': rol}
+    except Exception:
+        messages.success(request, 'No estás ingresado en el sistema!')
     return render(request, 'GestionUsuarios/metrica.html', context)
 
 
@@ -267,10 +274,12 @@ def historias(request, proyecto_id):
             hist.append(histo.codigo)
         tareas = Tarea.objects.filter(historia_Asociada__in=hist).exclude(estado=val).order_by('codigo')
         bugs = Bug.objects.filter(historia_Asociada__in=hist).exclude(estado=val).order_by('codigo')
-        context = {'historias': historias, 'tareas': tareas, 'bugs': bugs, 'proyecto': proyecto_id}
+        usuario = Integrante.objects.get(usuario=request.session['Usuario'])
+        rol = usuario.rol.descripcion
+        context = {'historias': historias, 'tareas': tareas, 'bugs': bugs, 'proyecto': proyecto_id, 'rol': rol}
     except Exception as e:
-        print('Error: ', e)
-        historias = None
+        messages.success(request, 'No estás ingresado en el sistema!')
+        return redirect('login')
     return render(request, 'GestionUsuarios/historias.html', context)
 
 
