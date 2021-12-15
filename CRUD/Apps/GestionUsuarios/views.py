@@ -4,6 +4,7 @@ from django.db import connection
 from django.shortcuts import render, redirect
 from .forms import *
 import datetime
+import pytz
 
 
 # Create your views here.
@@ -226,7 +227,7 @@ def deleteStatus(request, id):
 
 
 def metrica(request, proyecto_id):
-    today = datetime.date.today()
+    today = datetime.datetime.now(pytz.timezone("America/Guayaquil")).strftime('%Y-%m-%d')
     with connection.cursor() as cursor:
         cursor.execute('''CALL public.insert_time({},'{}')'''.format(str(proyecto_id), str(today)))
     tiemposActuales = []
