@@ -31,9 +31,9 @@
                     <h6 class="card-subtitle mb-2 text-muted">Encargado: {{ tarea.integrante_Encargado }}</h6>
                 </div>
             </div>
-            {% if tarea.dias >= 1 and tarea.dias < 3 and tarea.tiempo_estimado|sub:tarea.tiempo < 10 %}
+            {% if tarea.dias >= 1 and tarea.dias < 3 and tarea.tiempo_estimado|sub:tarea.tiempo < 6 %}
             <script type="text/javascript">document.getElementById("tarjeta{{tarea}}").classList.add("bg-warning");</script>
-            {% elif tarea.dias >= 3 and tarea.dias < 6 and tarea.tiempo_estimado|sub:tarea.tiempo >= 6 and tarea.tiempo_estimado|sub:tarea.tiempo < 15 %}
+            {% elif tarea.dias >= 3 and tarea.dias < 6 and tarea.tiempo_estimado|sub:tarea.tiempo >= 6 %}
             <script type="text/javascript">document.getElementById("tarjeta{{tarea}}").classList.add("bg-danger");</script>
             {% else %}
             <script type="text/javascript">document.getElementById("tarjeta{{tarea}}").classList.add("bg-info");</script>
