@@ -1,0 +1,61 @@
+{% extends 'GestionUsuarios/layout.html' %} &nbsp;&nbsp;
+
+{% load static %}
+{% load mathfilters %}
+<link rel="stylesheet" href="{% static '/css/metrica.css' %}">
+{% block content %}
+{% if request.session.Usuario and rol == 'Product Owner' %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-warning">
+    <strong>{{message}}</strong>
+</div>
+{% endfor %}
+{% endif %}
+<div class="container-fluid">
+    <h5 align="center">Acumulado de tareas pendientes de todos los proyectos</h5>
+    <form method="POST">{% csrf_token %}
+        <div>
+            <h3>Filtros:</h3>
+            <select name="select" class="form-select">
+    <option value="pel">Peligro</option>
+    <option value="war">Warning</option>
+    <option value="pen">Pendientes</option>
+    </select>
+    <button class="btn btn-primary" type="submit">Filtrar</button>
+        </div>
+
+    </form>
+    {% if tareas %}
+    <div class="row row-cols-3 row-cols-md-3 g-4">
+        {% for tarea in tareas %}
+        <div class="col">
+            <div id="tarjeta{{tarea}}" class="card text-center text-white mb-3">
+                <div class="card-header">{{tarea.estado}}</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ tarea.descripcion }}
+                        <bold color="white" align="right">Código: #{{ tarea.codigo }}</bold>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Encargado: {{ tarea.integrante_Encargado }}</h6>
+                </div>
+            </div>
+            {% if tarea.dias >= 1 and tarea.dias < 3 and tarea.tiempo_estimado|sub:tarea.tiempo < 6 %}
+            <script type="text/javascript">document.getElementById("tarjeta{{tarea}}").classList.add("bg-warning");</script>
+            {% elif tarea.dias >= 3 and tarea.dias < 6 and tarea.tiempo_estimado|sub:tarea.tiempo >= 6 %}
+            <script type="text/javascript">document.getElementById("tarjeta{{tarea}}").classList.add("bg-danger");</script>
+            {% else %}
+            <script type="text/javascript">document.getElementById("tarjeta{{tarea}}").classList.add("bg-info");</script>
+            {% endif %}
+            </div>
+            {% endfor %}
+
+        {% endif %}
+</div>
+    </div>
+    {% else %}
+    <h1 align="center">No tienes acceso</h1>
+    {% endif %}
+    {% endblock %}
+{% block extrajs %}
+<script src="{% static '/js/modal.js' %}"></script>
+{% endblock extrajs %}

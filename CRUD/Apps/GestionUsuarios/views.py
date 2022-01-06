@@ -257,6 +257,7 @@ def metrica(request, proyecto_id):
             context = {'dates': fechas, 'tendencia': tiemposIdeales, 'actual': tiemposActuales, 'rol': rol}
     except Exception:
         messages.success(request, 'No estás ingresado en el sistema!')
+        return redirect('login')
     return render(request, 'GestionUsuarios/metrica.html', context)
 
 
@@ -281,6 +282,30 @@ def historias(request, proyecto_id):
         messages.success(request, 'No estás ingresado en el sistema!')
         return redirect('login')
     return render(request, 'GestionUsuarios/historias.html', context)
+
+
+def reporteTareas(request):
+    try:
+        usuario = Integrante.objects.get(usuario=request.session['Usuario'])
+        rol = usuario.rol.descripcion
+        estado = Estado.objects.get(descripcion__icontains='pen')
+        cod = estado.codigo
+        if request.POST:
+            if 'war' in request.POST['select']:
+                tareas = Tarea.objects.filter(tiempo_usado__lte=6, dias__gte=1, dias__lte=2).exclude(estado=cod)
+            if 'pel' in request.POST['select']:
+                tareas = Tarea.objects.filter(tiempo_usado__gte=6, dias__gte=3, dias__lte=5).exclude(estado=cod)
+            if 'pen' in request.POST['select']:
+                tareas = Tarea.objects.filter(estado=cod)
+            context = {'tareas': tareas, 'rol': rol}
+            return render(request, 'GestionUsuarios/reporte.html', context)
+        else:
+            tareas = Tarea.objects.exclude(tiempo=0)
+            context = {'tareas': tareas, 'rol': rol}
+            return render(request, 'GestionUsuarios/reporte.html', context)
+    except Exception as e:
+        messages.success(request, 'No estás ingresado en el sistema!')
+        return redirect('login')
 
 
 def addHistoria(request, proy):
